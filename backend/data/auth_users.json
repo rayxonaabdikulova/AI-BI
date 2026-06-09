@@ -1,0 +1,29 @@
+{
+  "rayxona": {
+    "hashed_password": "$2b$12$hrN/isbV73yXqKA3y65cr.E6xo6tOZJ8OzoRVBiqsOW3ehXliOHQu"
+  },
+  "biz_e941f7": {
+    "hashed_password": "$2b$12$jssxE8L1JVYPsO0Z0SMLxeEp2iDh1v9cgHmvBoB7RgQ7h7wth9EPW"
+  },
+  "biz_3dd952": {
+    "hashed_password": "$2b$12$gzlgB23QGU4b8gzmO1N2sOBkPp4.n73WkeNLWBUtcnxnXdUAPxLjK"
+  },
+  "biz_b4fbca": {
+    "hashed_password": "$2b$12$3JkEGP325CskUoIyAMOdbu7fE5B3/OEyY/xRs9sar0t2hU5AffJK6"
+  },
+  "debug_user": {
+    "hashed_password": "$2b$12$GoB8EdPLkMUWajF5KBiU1.GOMSXlupQeqaPtrIjNEW0YfUugX9h7e"
+  },
+  "u1779382299": {
+    "hashed_password": "$2b$12$s1BmV2nHJT0npTvNLbSvbu6ScncbC.Rrbvylxx9d4e4eAuMqnmxHm"
+  },
+  "u1779382497": {
+    "hashed_password": "$2b$12$jkPCVaBSyJeVlZ/gosNhV.jMdenySGcvIls/sSNJ0Kb6I2Nmb3tT."
+  },
+  "u1779382645": {
+    "hashed_password": "$2b$12$kttoPKNHXtfrrA9GOh.wD.Bs5CVntV9BMwz0V71YJnF0t0sRiv712"
+  },
+  "ray_test_ai": {
+    "hashed_password": "$2b$12$HZs3Ev0jklt64qpfw1QrjOEFyvIcCW3AVNwvs.hnvLH.L6ctJp3uy"
+  }
+}
