@@ -36,13 +36,19 @@ app = FastAPI(
     version="0.3.0",
 )
 
-# Allow the Next.js dev server to call the API from the browser.
+# Allow the Next.js app (local + production) to call the API from the browser.
+_cors_origins = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+_extra_origins = os.getenv("CORS_ORIGINS", "").strip()
+if _extra_origins:
+    _cors_origins.extend(
+        origin.strip() for origin in _extra_origins.split(",") if origin.strip()
+    )
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-    ],
+    allow_origins=_cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
