@@ -33,7 +33,6 @@ import {
   PieChart,
   ResponsiveContainer,
   Tooltip,
-  type TooltipProps,
   XAxis,
   YAxis,
 } from "recharts";
@@ -239,11 +238,17 @@ function samplePcaRows(rows: PcaRow[], maxPoints: number, seed = 42): PcaRow[] {
   return sampled.slice(0, maxPoints);
 }
 
+type DonutTooltipProps = {
+  active?: boolean;
+  payload?: ReadonlyArray<{ payload?: DonutDatum }>;
+  formatter: (value: number) => string;
+};
+
 function DonutRevenueTooltip({
   active,
   payload,
   formatter,
-}: TooltipProps<number, string> & { formatter: (value: number) => string }) {
+}: DonutTooltipProps) {
   if (!active || !payload?.length) return null;
   const point = payload[0]?.payload as DonutDatum | undefined;
   if (!point) return null;
@@ -1293,7 +1298,9 @@ export default function DashboardPage() {
                         tickFormatter={(v: number) => formatCurrency(v)}
                       />
                       <Tooltip
-                        formatter={(value: number | null) => formatCurrency(value)}
+                        formatter={(value) =>
+                          formatCurrency(typeof value === "number" ? value : null)
+                        }
                         labelStyle={{ color: "#3f3f46", fontWeight: 600 }}
                         contentStyle={{
                           borderRadius: "12px",

@@ -3,7 +3,6 @@
 import {
   CartesianGrid,
   Legend,
-  type TooltipProps,
   ResponsiveContainer,
   Scatter,
   ScatterChart,
@@ -41,13 +40,21 @@ function clusterDisplayName(cluster: number, groupLabel: string): string {
   return `${groupLabel} ${alpha}`;
 }
 
+type PcaTooltipProps = {
+  active?: boolean;
+  payload?: ReadonlyArray<{ payload?: Partial<PcaRow> }>;
+  axis1Label: string;
+  axis2Label: string;
+  groupLabel: string;
+};
+
 function PcaTooltip({
   active,
   payload,
   axis1Label,
   axis2Label,
   groupLabel,
-}: TooltipProps<number, string> & { axis1Label: string; axis2Label: string; groupLabel: string }) {
+}: PcaTooltipProps) {
   if (!active || !payload?.length) return null;
   const point = payload[0]?.payload as Partial<PcaRow> | undefined;
   if (!point) return null;
