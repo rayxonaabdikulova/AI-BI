@@ -40,6 +40,7 @@ app = FastAPI(
 _cors_origins = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
+    "https://ai-bi-frontend.onrender.com",
 ]
 _extra_origins = os.getenv("CORS_ORIGINS", "").strip()
 if _extra_origins:
