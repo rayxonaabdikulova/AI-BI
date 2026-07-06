@@ -22,7 +22,8 @@ export default function LoginPage() {
   const [loginPassword, setLoginPassword] = useState("");
   const [registerUsername, setRegisterUsername] = useState("");
   const [registerPassword, setRegisterPassword] = useState("");
-  const [isInputLocked, setIsInputLocked] = useState(true);
+  const [loginInputLocked, setLoginInputLocked] = useState(true);
+  const [registerInputLocked, setRegisterInputLocked] = useState(true);
   const [busy, setBusy] = useState<"login" | "register" | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -31,7 +32,8 @@ export default function LoginPage() {
     setLoginPassword("");
     setRegisterUsername("");
     setRegisterPassword("");
-    setIsInputLocked(true);
+    setLoginInputLocked(true);
+    setRegisterInputLocked(true);
     setError(null);
     setBusy(null);
   }, []);
@@ -55,7 +57,17 @@ export default function LoginPage() {
       busyLogin: tx(t, "auth.busyLogin", "Signing in..."),
       busySignup: tx(t, "auth.busySignup", "Creating account..."),
       errorDefault: tx(t, "auth.errorDefault", "Authentication failed."),
-      hint: tx(t, "auth.hint", "Use the same credentials for both forms."),
+      errorNetwork: tx(
+        t,
+        "auth.errorNetwork",
+        "Cannot reach the API server. Wait a moment and try again.",
+      ),
+      errorCredentials: tx(
+        t,
+        "auth.errorCredentials",
+        "Incorrect username or password. Create an account first if you are new.",
+      ),
+      hint: tx(t, "auth.hint", "New here? Use Sign Up on the right first."),
     }),
     [t],
   );
@@ -83,8 +95,15 @@ export default function LoginPage() {
       router.replace("/dashboard");
     } catch (err) {
       if (axios.isAxiosError(err)) {
-        const detail = err.response?.data?.detail;
-        setError(typeof detail === "string" ? detail : text.errorDefault);
+        if (!err.response) {
+          setError(text.errorNetwork);
+        } else if (err.response.status === 401) {
+          const detail = err.response.data?.detail;
+          setError(typeof detail === "string" ? detail : text.errorCredentials);
+        } else {
+          const detail = err.response.data?.detail;
+          setError(typeof detail === "string" ? detail : text.errorDefault);
+        }
       } else {
         setError(err instanceof Error ? err.message : text.errorDefault);
       }
@@ -103,8 +122,12 @@ export default function LoginPage() {
       router.replace("/dashboard");
     } catch (err) {
       if (axios.isAxiosError(err)) {
-        const detail = err.response?.data?.detail;
-        setError(typeof detail === "string" ? detail : text.errorDefault);
+        if (!err.response) {
+          setError(text.errorNetwork);
+        } else {
+          const detail = err.response.data?.detail;
+          setError(typeof detail === "string" ? detail : text.errorDefault);
+        }
       } else {
         setError(err instanceof Error ? err.message : text.errorDefault);
       }
@@ -151,9 +174,18 @@ export default function LoginPage() {
         </section>
 
         <section className="grid gap-6 lg:col-span-3 sm:grid-cols-2">
+          {error ? (
+            <div className="sm:col-span-2">
+              <p className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+                {error}
+              </p>
+            </div>
+          ) : null}
+
           <form
             onSubmit={handleLogin}
-            className="rounded-3xl border border-zinc-800/70 bg-zinc-900/75 p-6 shadow-xl shadow-black/20 backdrop-blur"
+            autoComplete="on"
+            className="overflow-hidden rounded-3xl border border-zinc-800/70 bg-zinc-900/75 p-6 shadow-xl shadow-black/20 backdrop-blur"
           >
             <h2 className="text-xl font-semibold text-white">{text.loginTitle}</h2>
             <p className="mt-2 text-xs text-zinc-400">{text.hint}</p>
@@ -162,8 +194,9 @@ export default function LoginPage() {
             <input
               value={loginUsername}
               onChange={(e) => setLoginUsername(e.target.value)}
-              onFocus={() => setIsInputLocked(false)}
-              readOnly={isInputLocked}
+              onFocus={() => setLoginInputLocked(false)}
+              readOnly={loginInputLocked}
+              name="login-username"
               autoComplete="username"
               required
               className="mt-2 h-11 w-full rounded-xl border border-zinc-700 bg-zinc-950/80 px-3 text-sm text-zinc-100 outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-500/30"
@@ -175,8 +208,9 @@ export default function LoginPage() {
               type="password"
               value={loginPassword}
               onChange={(e) => setLoginPassword(e.target.value)}
-              onFocus={() => setIsInputLocked(false)}
-              readOnly={isInputLocked}
+              onFocus={() => setLoginInputLocked(false)}
+              readOnly={loginInputLocked}
+              name="login-password"
               autoComplete="current-password"
               required
               minLength={6}
@@ -195,7 +229,8 @@ export default function LoginPage() {
 
           <form
             onSubmit={handleRegister}
-            className="rounded-3xl border border-zinc-800/70 bg-zinc-900/75 p-6 shadow-xl shadow-black/20 backdrop-blur"
+            autoComplete="on"
+            className="overflow-hidden rounded-3xl border border-zinc-800/70 bg-zinc-900/75 p-6 shadow-xl shadow-black/20 backdrop-blur"
           >
             <div className="flex items-center gap-2">
               <UserPlus className="size-5 text-violet-300" aria-hidden />
@@ -206,9 +241,10 @@ export default function LoginPage() {
             <input
               value={registerUsername}
               onChange={(e) => setRegisterUsername(e.target.value)}
-              onFocus={() => setIsInputLocked(false)}
-              readOnly={isInputLocked}
-              autoComplete="email"
+              onFocus={() => setRegisterInputLocked(false)}
+              readOnly={registerInputLocked}
+              name="register-username"
+              autoComplete="username"
               required
               className="mt-2 h-11 w-full rounded-xl border border-zinc-700 bg-zinc-950/80 px-3 text-sm text-zinc-100 outline-none transition focus:border-violet-400 focus:ring-2 focus:ring-violet-500/30"
               placeholder="owner"
@@ -219,8 +255,9 @@ export default function LoginPage() {
               type="password"
               value={registerPassword}
               onChange={(e) => setRegisterPassword(e.target.value)}
-              onFocus={() => setIsInputLocked(false)}
-              readOnly={isInputLocked}
+              onFocus={() => setRegisterInputLocked(false)}
+              readOnly={registerInputLocked}
+              name="register-password"
               autoComplete="new-password"
               required
               minLength={6}
@@ -238,12 +275,6 @@ export default function LoginPage() {
           </form>
         </section>
       </div>
-
-      {error ? (
-        <div className="mx-auto mb-8 w-full max-w-6xl px-4 sm:px-6 lg:px-8">
-          <p className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">{error}</p>
-        </div>
-      ) : null}
     </main>
   );
 }
